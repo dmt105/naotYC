@@ -1,4 +1,3 @@
-// components/admin/settings/GeneralSettings.tsx
 'use client'
 import { useState } from 'react'
 import type { GeneralSettings as GeneralSettingsType } from '@/types/settings' // Correction: import type-only

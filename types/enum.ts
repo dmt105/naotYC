@@ -16,3 +16,9 @@ export enum UserRole {
   DESTINATAIRE = 'DESTINATAIRE',
   ADMIN = 'ADMIN'
 }
+
+export enum ReceptionStatus {
+  UNREAD = 'UNREAD',
+  READ = 'READ',
+  ARCHIVED = 'ARCHIVED'
+}

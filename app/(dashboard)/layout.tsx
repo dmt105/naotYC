@@ -6,6 +6,9 @@ import { getCurrentUserRole } from '@/types/auth'
 import { getUserByRole } from '@/lib/mock-user'
 import { initializeDevelopmentEnvironment } from '@/lib/init-dev'
 import { UserRole } from '@/types/user'
+import { StatsCards } from '@/components/dashboard/stats-cards';
+import { ValidationQueue } from '@/components/dashboard/validation-queue';
+import { NotesList } from '@/components/dashboard/notes-list';
 
 interface DashboardLayoutProps {
   children: ReactNode

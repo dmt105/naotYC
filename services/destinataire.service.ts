@@ -1,93 +1,127 @@
-import { ReceivedNote, Notification } from '@/types/destinataire'
+// src/services/recipient.service.ts
+import { axiosClient } from './api/axiosClient';
+import {
+  RecipientDashboard,
+  RecipientNoteDetail,
+  RecipientNoteSummary,
+  RecipientPreferences,
+  RecipientFilters,
+  BulkActionRequest,
+  CalendarIntegration
+} from '@/types/destinataire';
 
-class DestinataireService {
-  private baseURL = process.env.NEXT_PUBLIC_API_URL
+export const recipientService = {
+  // Dashboard et statistiques
+  async getDashboard(): Promise<RecipientDashboard> {
+    const response = await axiosClient.get('/api/recipient/dashboard');
+    return response.data;
+  },
 
-  private async fetchWithAuth(endpoint: string, options: RequestInit = {}) {
-    const token = localStorage.getItem('naoty_auth_token')
-    
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        ...options.headers,
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    return response.json()
-  }
-
-  // Get received notes with filters
-  async getReceivedNotes(filters?: {
-    status?: 'UNREAD' | 'READ' | 'ARCHIVED'
-    type?: string
-    search?: string
-  }): Promise<ReceivedNote[]> {
-    const queryParams = new URLSearchParams()
-    if (filters?.status) queryParams.append('status', filters.status)
-    if (filters?.type) queryParams.append('type', filters.type)
-    if (filters?.search) queryParams.append('search', filters.search)
-
-    const queryString = queryParams.toString()
-    const endpoint = `/destinataire/notes${queryString ? `?${queryString}` : ''}`
-
-    return this.fetchWithAuth(endpoint)
-  }
-
-  // Mark note as read
-  async markAsRead(noteId: string): Promise<void> {
-    await this.fetchWithAuth(`/destinataire/notes/${noteId}/read`, {
-      method: 'POST',
-    })
-  }
-
-  // Archive note
-  async archiveNote(noteId: string): Promise<void> {
-    await this.fetchWithAuth(`/destinataire/notes/${noteId}/archive`, {
-      method: 'POST',
-    })
-  }
-
-  // Unarchive note
-  async unarchiveNote(noteId: string): Promise<void> {
-    await this.fetchWithAuth(`/destinataire/notes/${noteId}/unarchive`, {
-      method: 'POST',
-    })
-  }
-
-  // Add note to calendar
-  async addToCalendar(noteId: string): Promise<{ success: boolean; calendarUrl?: string }> {
-    return this.fetchWithAuth(`/destinataire/notes/${noteId}/add-to-calendar`, {
-      method: 'POST',
-    })
-  }
-
-  // Get notifications
-  async getNotifications(): Promise<Notification[]> {
-    return this.fetchWithAuth('/destinataire/notifications')
-  }
-
-  // Mark notification as read
-  async markNotificationAsRead(notificationId: string): Promise<void> {
-    await this.fetchWithAuth(`/destinataire/notifications/${notificationId}/read`, {
-      method: 'POST',
-    })
-  }
-
-  // Get stats for dashboard
-  async getStats(): Promise<{
-    unreadCount: number
-    totalReceived: number
-    archivedCount: number
-    urgentCount: number
+  // Notes avec pagination et filtres
+  async getNotes(params?: {
+    filters?: RecipientFilters;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    notes: RecipientNoteSummary[];
+    total: number;
+    page: number;
+    totalPages: number;
+    hasMore: boolean;
   }> {
-    return this.fetchWithAuth('/destinataire/stats')
-  }
-}
+    const response = await axiosClient.get('/api/recipient/notes', { params });
+    return response.data;
+  },
 
-export const destinataireService = new DestinataireService()
+  // Détails d'une note spécifique
+  async getNoteDetail(noteId: string): Promise<RecipientNoteDetail> {
+    const response = await axiosClient.get(`/api/recipient/notes/${noteId}`);
+    return response.data;
+  },
+
+  // Actions sur les notes
+  async markAsRead(noteId: string): Promise<void> {
+    await axiosClient.patch(`/api/recipient/notes/${noteId}/read`);
+  },
+
+  async markAsUnread(noteId: string): Promise<void> {
+    await axiosClient.patch(`/api/recipient/notes/${noteId}/unread`);
+  },
+
+  async archiveNote(noteId: string): Promise<void> {
+    await axiosClient.patch(`/api/recipient/notes/${noteId}/archive`);
+  },
+
+  async unarchiveNote(noteId: string): Promise<void> {
+    await axiosClient.patch(`/api/recipient/notes/${noteId}/unarchive`);
+  },
+
+  // Actions groupées
+  async bulkActions(request: BulkActionRequest): Promise<{ success: number; failed: number }> {
+    const response = await axiosClient.post('/api/recipient/notes/bulk-actions', request);
+    return response.data;
+  },
+
+  // Intégration calendrier
+  async addToCalendar(noteId: string): Promise<{ success: boolean; eventUrl?: string; eventId?: string }> {
+    const response = await axiosClient.post(`/api/recipient/notes/${noteId}/add-to-calendar`);
+    return response.data;
+  },
+
+  async removeFromCalendar(noteId: string): Promise<void> {
+    await axiosClient.delete(`/api/recipient/notes/${noteId}/calendar-event`);
+  },
+
+  async getCalendarIntegration(): Promise<CalendarIntegration> {
+    const response = await axiosClient.get('/api/recipient/calendar/integration');
+    return response.data;
+  },
+
+  async connectCalendar(): Promise<{ authUrl: string }> {
+    const response = await axiosClient.post('/api/recipient/calendar/connect');
+    return response.data;
+  },
+
+  async disconnectCalendar(): Promise<void> {
+    await axiosClient.delete('/api/recipient/calendar/disconnect');
+  },
+
+  // Préférences
+  async getPreferences(): Promise<RecipientPreferences> {
+    const response = await axiosClient.get('/api/recipient/preferences');
+    return response.data;
+  },
+
+  async updatePreferences(preferences: Partial<RecipientPreferences>): Promise<RecipientPreferences> {
+    const response = await axiosClient.put('/api/recipient/preferences', preferences);
+    return response.data;
+  },
+
+  // Recherche avancée
+  async searchNotes(query: string, filters?: RecipientFilters): Promise<RecipientNoteSummary[]> {
+    const response = await axiosClient.get('/api/recipient/notes/search', {
+      params: { q: query, ...filters }
+    });
+    return response.data;
+  },
+
+  // Téléchargement de pièces jointes
+  async downloadAttachment(noteId: string, attachmentId: string): Promise<Blob> {
+    const response = await axiosClient.get(
+      `/api/recipient/notes/${noteId}/attachments/${attachmentId}/download`,
+      { responseType: 'blob' }
+    );
+    return response.data;
+  },
+
+  // Export des notes
+  async exportNotes(filters?: RecipientFilters, format: 'PDF' | 'CSV' = 'PDF'): Promise<Blob> {
+    const response = await axiosClient.get('/api/recipient/notes/export', {
+      params: { format, ...filters },
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+};

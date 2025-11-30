@@ -33,13 +33,10 @@ export function UserManagementTable({
 
   const handleSave = (userData: Partial<UserManagement>) => {
     if (selectedUser) {
-      // Fusionner les données existantes avec les nouvelles données
       const updatedUser: UserManagement = {
         ...selectedUser,
         ...userData,
-        // S'assurer que les champs obligatoires sont présents
         lastActivity: userData.lastActivity || selectedUser.lastActivity,
-        // Ajouter d'autres champs obligatoires si nécessaire
       }
       onEdit(updatedUser)
     }
@@ -59,6 +56,37 @@ export function UserManagementTable({
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR')
+  }
+
+  // CORRECTION : Fonction pour obtenir les initiales
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  // CORRECTION : Fonction pour obtenir l'avatar ou les initiales
+  const getUserAvatar = (user: UserManagement) => {
+    // Si l'utilisateur a un avatar, l'utiliser
+    if (user.avatar) {
+      return (
+        <img
+          className="h-10 w-10 rounded-full"
+          src={user.avatar}
+          alt={user.name}
+        />
+      )
+    }
+    
+    // Sinon, afficher les initiales avec un fond coloré
+    return (
+      <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+        {getInitials(user.name)}
+      </div>
+    )
   }
 
   if (loading) {
@@ -115,17 +143,8 @@ export function UserManagementTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        {user.avatar ? (
-                          <img
-                            className="h-10 w-10 rounded-full"
-                            src={user.avatar}
-                            alt={user.name}
-                          />
-                        ) : (
-                          <div className="h-10 w-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-sm font-medium">
-                            {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-                          </div>
-                        )}
+                        {/* CORRECTION : Utiliser la fonction getUserAvatar */}
+                        {getUserAvatar(user)}
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
@@ -138,8 +157,9 @@ export function UserManagementTable({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
+                    {/* CORRECTION : Utiliser user.role au lieu de user.roles */}
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}>
-                      {user.roles}
+                      {user.role}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -164,19 +184,19 @@ export function UserManagementTable({
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(user)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-blue-600 hover:text-blue-900 px-3 py-1 rounded hover:bg-blue-50 transition-colors"
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => onResetPassword(user.id)}
-                        className="text-orange-600 hover:text-orange-900"
+                        className="text-orange-600 hover:text-orange-900 px-3 py-1 rounded hover:bg-orange-50 transition-colors"
                       >
                         Réinitialiser MDP
                       </button>
                       <button
                         onClick={() => onDelete(user.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 hover:text-red-900 px-3 py-1 rounded hover:bg-red-50 transition-colors"
                       >
                         Supprimer
                       </button>

@@ -63,6 +63,17 @@ export function DashboardHeader({ userRole, currentUser }: DashboardHeaderProps)
     return roleNames[role]
   }
 
+  // Nouvelle fonction pour gérer plusieurs rôles
+  const getRolesDisplayName = (roles: UserRole[]): string => {
+    if (roles.length === 0) return 'Aucun rôle'
+    if (roles.length === 1) return getRoleDisplayName(roles[0])
+    
+    // Pour plusieurs rôles, affiche le premier rôle suivi de "+X autres"
+    const mainRole = getRoleDisplayName(roles[0])
+    const additionalCount = roles.length - 1
+    return `${mainRole} +${additionalCount}`
+  }
+
   const getInitials = (name: string): string => {
     return name
       .split(' ')
@@ -260,7 +271,7 @@ export function DashboardHeader({ userRole, currentUser }: DashboardHeaderProps)
                   {user.name}
                 </p>
                 <p className="text-xs text-gray-500 group-hover:text-gray-400 capitalize truncate max-w-[120px]">
-                  {getRoleDisplayName(user.role)}
+                  {getRolesDisplayName(user.roles)} {/* Correction ici */}
                 </p>
               </div>
 

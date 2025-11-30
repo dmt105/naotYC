@@ -1,12 +1,12 @@
 'use client'
-import { ReceivedNote } from '@/types/destinataire'
+import { RecipientNoteDetail } from '@/types/destinataire'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { UrgencyBadge } from '../ui/UrgencyBadge'
 import { useState } from 'react'
-import { destinataireService } from '@/services/destinataire.service'
+import { recipientService } from '@/services/destinataire.service' // Correction ici
 
 interface NoteCardProps {
-  note: ReceivedNote
+  note: RecipientNoteDetail
   onStatusChange?: () => void
   onAddToCalendar?: (noteId: string) => void
 }
@@ -19,7 +19,7 @@ export function DestinataireNoteCard({ note, onStatusChange, onAddToCalendar }: 
     
     try {
       setIsLoading(true)
-      await destinataireService.markAsRead(note.id)
+      await recipientService.markAsRead(note.id) // Correction ici
       onStatusChange?.()
     } catch (error) {
       console.error('Failed to mark note as read:', error)
@@ -32,9 +32,9 @@ export function DestinataireNoteCard({ note, onStatusChange, onAddToCalendar }: 
     try {
       setIsLoading(true)
       if (note.status === 'ARCHIVED') {
-        await destinataireService.unarchiveNote(note.id)
+        await recipientService.unarchiveNote(note.id) // Correction ici
       } else {
-        await destinataireService.archiveNote(note.id)
+        await recipientService.archiveNote(note.id) // Correction ici
       }
       onStatusChange?.()
     } catch (error) {
@@ -47,7 +47,7 @@ export function DestinataireNoteCard({ note, onStatusChange, onAddToCalendar }: 
   const handleAddToCalendar = async () => {
     try {
       setIsLoading(true)
-      const result = await destinataireService.addToCalendar(note.id)
+      const result = await recipientService.addToCalendar(note.id) // Correction ici
       if (result.success) {
         onAddToCalendar?.(note.id)
       }
@@ -79,7 +79,7 @@ export function DestinataireNoteCard({ note, onStatusChange, onAddToCalendar }: 
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="font-semibold text-gray-900 text-lg">{note.title}</h3>
-            <UrgencyBadge urgency={note.urgency} />
+            <UrgencyBadge urgency={note.priority} />
           </div>
           <p className="text-gray-600 text-sm line-clamp-2">{note.content}</p>
         </div>
@@ -91,9 +91,9 @@ export function DestinataireNoteCard({ note, onStatusChange, onAddToCalendar }: 
 
       <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
         <div className="flex items-center gap-4">
-          <span>De: {note.sender.name}</span>
+          <span>De: {note.author.name}</span>
           <span>•</span>
-          <span>{formatDate(note.sentAt)}</span>
+          <span>{formatDate(note.sentAt || note.createdAt)}</span>
         </div>
         {note.attachments.length > 0 && (
           <span className="flex items-center gap-1">
@@ -117,7 +117,7 @@ export function DestinataireNoteCard({ note, onStatusChange, onAddToCalendar }: 
           {note.status === 'ARCHIVED' ? 'Désarchiver' : 'Archiver'}
         </button>
         
-        {note.canAddToCalendar && note.scheduledDate && (
+        {note.canAddToCalendar && note.scheduledAt && (
           <button
             onClick={(e) => {
               e.stopPropagation()

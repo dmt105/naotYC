@@ -5,12 +5,12 @@ let mockSession: { user: User; token: string; expiresAt: number } | null = null
 
 // Fonction pour initialiser une session mock pour le développement
 export const initializeMockSession = (role: UserRole = UserRole.REDACTEUR) => {
-  const mockUsers = {
+  const mockUsers: Record<UserRole, User> = {
     [UserRole.ADMIN]: {
       id: '1',
       email: 'admin@youthcomputing.org',
       name: 'Admin System',
-      role: UserRole.ADMIN,
+      roles: [UserRole.ADMIN], 
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       notificationsCount: 12,
     },
@@ -18,7 +18,7 @@ export const initializeMockSession = (role: UserRole = UserRole.REDACTEUR) => {
       id: '2',
       email: 'directeur@youthcomputing.org',
       name: 'Pierre Directeur',
-      role: UserRole.DIRECTEUR_EXECUTIF,
+      roles: [UserRole.DIRECTEUR_EXECUTIF], 
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
       notificationsCount: 8,
     },
@@ -26,7 +26,7 @@ export const initializeMockSession = (role: UserRole = UserRole.REDACTEUR) => {
       id: '3',
       email: 'chef.technique@youthcomputing.org',
       name: 'Marie Chef Technique',
-      role: UserRole.CHEF_DEPARTEMENT,
+      roles: [UserRole.CHEF_DEPARTEMENT], // 
       department: 'technique',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
       notificationsCount: 5,
@@ -35,7 +35,7 @@ export const initializeMockSession = (role: UserRole = UserRole.REDACTEUR) => {
       id: '4',
       email: 'redacteur@youthcomputing.org',
       name: 'Jean Rédacteur',
-      role: UserRole.REDACTEUR,
+      roles: [UserRole.REDACTEUR], // 
       department: 'communication',
       avatar: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face',
       notificationsCount: 3,
@@ -44,7 +44,7 @@ export const initializeMockSession = (role: UserRole = UserRole.REDACTEUR) => {
       id: '5',
       email: 'membre@youthcomputing.org',
       name: 'Luc Membre',
-      role: UserRole.DESTINATAIRE,
+      roles: [UserRole.DESTINATAIRE], //
       avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face',
       notificationsCount: 7,
     },
@@ -95,7 +95,7 @@ class AuthService {
         id: '4',
         email: 'redacteur@youthcomputing.org',
         name: 'Jean Rédacteur',
-        role: UserRole.REDACTEUR,
+        roles: [UserRole.REDACTEUR], //
         department: 'communication',
         notificationsCount: 3,
       }
@@ -104,7 +104,7 @@ class AuthService {
     const userData = localStorage.getItem(this.USER_KEY)
     if (userData) {
       try {
-        return JSON.parse(userData)
+        return JSON.parse(userData) as User
       } catch {
         // En cas d'erreur, retourner un utilisateur mock
       }
@@ -115,7 +115,7 @@ class AuthService {
       id: '4',
       email: 'redacteur@youthcomputing.org',
       name: 'Jean Rédacteur',
-      roles: UserRole.REDACTEUR,
+      roles: [UserRole.REDACTEUR], //
       department: 'communication',
       notificationsCount: 3,
     }
@@ -144,16 +144,23 @@ class AuthService {
     if (typeof window === 'undefined') return UserRole.REDACTEUR
     
     const user = this.getUser()
-    return user?.roles || UserRole.REDACTEUR // Rôle par défaut pour le développement
+    return user?.roles?.[0] || UserRole.REDACTEUR
   }
 
-  //CORRECTION : Ajout de la méthode hasPermission manquante
+  // Méthode pour obtenir tous les rôles
+  getCurrentUserRoles(): UserRole[] {
+    if (typeof window === 'undefined') return [UserRole.REDACTEUR]
+    
+    const user = this.getUser()
+    return user?.roles || [UserRole.REDACTEUR]
+  }
+
   hasPermission(requiredRole: UserRole | UserRole[]): boolean {
-    const userRole = this.getCurrentUserRole()
-    if (!userRole) return false
+    const userRoles = this.getCurrentUserRoles()
+    if (!userRoles.length) return false
 
     if (Array.isArray(requiredRole)) {
-      return requiredRole.includes(userRole)
+      return requiredRole.some(role => userRoles.includes(role))
     }
 
     // Hiérarchie des rôles (Admin > Directeur > Chef > Rédacteur > Destinataire)
@@ -165,10 +172,12 @@ class AuthService {
       [UserRole.DESTINATAIRE]: 1,
     }
 
-    return roleHierarchy[userRole] >= roleHierarchy[requiredRole]
+    // Vérifier si l'utilisateur a au moins un rôle avec suffisamment de privilèges
+    return userRoles.some(userRole => 
+      roleHierarchy[userRole] >= roleHierarchy[requiredRole]
+    )
   }
 
-  //CORRECTION : Ajout de la méthode getSession manquante
   getSession(): { user: User; token: string; expiresAt: number } | null {
     if (typeof window === 'undefined') {
       return {
@@ -176,7 +185,7 @@ class AuthService {
           id: '4',
           email: 'redacteur@youthcomputing.org',
           name: 'Jean Rédacteur',
-          roles: UserRole.REDACTEUR,
+          roles: [UserRole.REDACTEUR], //
           department: 'communication',
           notificationsCount: 3,
         },
@@ -201,11 +210,11 @@ class AuthService {
 
   async login(email: string, password: string): Promise<any> {
     // Mock login - toujours réussir en développement
-    const mockUser = {
+    const mockUser: User = {
       id: '4',
       email: email,
       name: 'Utilisateur Démo',
-      role: UserRole.REDACTEUR,
+      roles: [UserRole.REDACTEUR], //
       department: 'communication',
       notificationsCount: 3,
     }
@@ -229,7 +238,6 @@ class AuthService {
     window.location.href = '/auth/login'
   }
 
-  //CORRECTION : Ajout de la méthode refreshToken manquante
   async refreshToken(): Promise<string> {
     // En développement, retourner simplement un nouveau token mock
     const newToken = 'mock_jwt_token_refreshed'

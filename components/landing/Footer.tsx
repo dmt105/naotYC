@@ -8,8 +8,12 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center">
-              <FileText className="h-8 w-8" />
-              <span className="ml-2 text-xl font-heading font-bold">NaotY</span>
+               <img 
+                  src="/logo.png" 
+                  alt="Logo" 
+                  className="h-12 w-auto max-w-full object-contain"
+                 />
+              <span className="ml-2 text-xl font-heading font-bold">NaotYC</span>
             </div>
             <p className="mt-4 max-w-md text-sm leading-6 text-gray-300">
               Solution de gestion des notes internes développée spécifiquement pour Youth Computing. 

@@ -98,7 +98,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
             <button
               key={item.name}
               onClick={() => handleNavigation(item)}
-              className={`w-full flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group relative ${
+              className={`w-full flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group ${
                 isActive
                   ? 'bg-primary/10 text-primary shadow-sm hover:cursor-pointer'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:cursor-pointer'
@@ -141,6 +141,20 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
 
       {/* User Info Section */}
       <div className="p-4 border-t border-gray-200">
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
+          <div className={`bg-gradient-to-r ${getRoleColor(userRole)} rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 ${
+            isCollapsed ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm'
+          }`}>
+            {getInitials(user.name)}
+          </div>
+          
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+              <p className="text-xs text-gray-500 truncate">{user.roles}</p>
+            </div>
+          )}
+        </div>
 
         {/* Quick Stats - Only show when not collapsed */}
         {!isCollapsed && (

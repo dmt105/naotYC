@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import NotesFilter from '@/components/notes/NotesFilter'
 import {NotesTables} from '@/components/notes/NotesTables'
-import { Note, NoteStatus, NoteType } from '@/types'
+import { Note, NoteStatus, NoteType } from '@/lib/types'
 
 // Données mockées pour la démonstration //
 const mockNotes: Note[] = [

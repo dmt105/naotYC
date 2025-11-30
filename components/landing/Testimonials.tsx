@@ -1,4 +1,3 @@
-// components/landing/Testimonials.tsx
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Star } from 'lucide-react'
 import { testimonials } from '@/constants/constant'

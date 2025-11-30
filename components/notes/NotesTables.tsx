@@ -12,9 +12,9 @@ export function NotesTables({ notes }: NotesTableProps) {
   if (notes.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-        <p className="text-gray-500 text-lg">Aucune note trouvée</p>
+        <p className="text-gray-500 text-lg">Aucun document trouvé </p>
         <p className="text-gray-400 mt-2">
-          Créez votre première note pour commencer
+          Créez votre premier document pour commencer
         </p>
       </div>
     )

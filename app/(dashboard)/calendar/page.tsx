@@ -41,7 +41,7 @@ export default function CalendarPage() {
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">{selectedDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</h2>
           <div className="grid grid-cols-7 gap-1 text-sm">
-            {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(day => (
+            {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(day => (
               <div key={day} className="text-center text-gray-500 font-medium py-2">
                 {day}
               </div>

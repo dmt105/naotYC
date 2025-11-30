@@ -28,9 +28,11 @@ export function AuthLayout({
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
             <div className="text-center">
               <div className="flex justify-center">
-                <svg className="h-12 w-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <img 
+                  src="/logo.png" 
+                  alt="Logo" 
+                  className="h-30 w-auto max-w-full object-contain"
+                />
               </div>
               <h2 className="mt-6 text-3xl font-heading font-bold text-gray-900">
                 {title}
@@ -49,7 +51,7 @@ export function AuthLayout({
           </div>
           
           {/* Demo Credentials - Only for login */}
-          {linkHref === '/auth/register' && (
+          {/* {linkHref === '/auth/register' && (
             <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
               <h3 className="text-sm font-medium text-blue-800 mb-2">
                 Comptes de démonstration :
@@ -60,7 +62,7 @@ export function AuthLayout({
                 <div><strong>Directeur :</strong> directeur@youthcomputing.org / demo123</div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
       <Footer />

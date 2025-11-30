@@ -2,25 +2,89 @@
 import { useState } from 'react'
 import { KpiCard } from '@/components/ui/kpiCard'
 import { DestinataireNoteCard } from '@/components/destinataire/NoteCard'
-import { useDestinataireNotes, useDestinataireStats } from '@/hooks/useDestinataire'
-import { ReceivedNote } from '@/types/destinataire'
+import { useRecipientNotes } from '@/hooks/useDestinataire' // Correction ici
+import { RecipientNoteDetail } from '@/types/destinataire' // Correction du type
 
 export default function DestinataireDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'unread' | 'all' | 'archived'>('overview')
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState<string>('all')
 
-  // Fetch data based on active tab
-  const { notes: allNotes, loading: notesLoading, refetch: refetchNotes } = useDestinataireNotes({
-    status: activeTab === 'unread' ? 'UNREAD' : activeTab === 'archived' ? 'ARCHIVED' : undefined,
-    type: typeFilter === 'all' ? undefined : typeFilter,
-    search: searchTerm || undefined,
+  // Utilisation du hook useRecipientNotes pour récupérer les données
+  const { 
+    loading: notesLoading, 
+    error: notesError,
+    getDashboardStats,
+    getReceivedNotes,
+    markNoteAsRead,
+    archiveNote,
+    addToCalendar 
+  } = useRecipientNotes()
+
+  const [stats, setStats] = useState({
+    unreadCount: 0,
+    totalReceived: 0,
+    archivedCount: 0,
+    urgentCount: 0
+  })
+  const [allNotes, setAllNotes] = useState<RecipientNoteDetail[]>([])
+  const [statsLoading, setStatsLoading] = useState(false)
+
+  // Charger les statistiques au montage du composant
+  useState(() => {
+    const loadStats = async () => {
+      setStatsLoading(true)
+      try {
+        const dashboardStats = await getDashboardStats()
+        setStats({
+          unreadCount: dashboardStats.unreadCount || 0,
+          totalReceived: dashboardStats.totalReceived || 0,
+          archivedCount: dashboardStats.archivedCount || 0,
+          urgentCount: dashboardStats.urgentCount || 0
+        })
+      } catch (error) {
+        console.error('Failed to load stats:', error)
+      } finally {
+        setStatsLoading(false)
+      }
+    }
+
+    const loadNotes = async () => {
+      try {
+        const notesData = await getReceivedNotes({
+          status: activeTab === 'unread' ? 'UNREAD' : activeTab === 'archived' ? 'ARCHIVED' : undefined,
+          search: searchTerm || undefined,
+        })
+        setAllNotes(notesData.notes || [])
+      } catch (error) {
+        console.error('Failed to load notes:', error)
+      }
+    }
+
+    loadStats()
+    loadNotes()
   })
 
-  const { stats, loading: statsLoading } = useDestinataireStats()
-
-  const handleStatusChange = () => {
-    refetchNotes()
+  const handleStatusChange = async () => {
+    // Recharger les notes après un changement de statut
+    try {
+      const notesData = await getReceivedNotes({
+        status: activeTab === 'unread' ? 'UNREAD' : activeTab === 'archived' ? 'ARCHIVED' : undefined,
+        search: searchTerm || undefined,
+      })
+      setAllNotes(notesData.notes || [])
+      
+      // Recharger aussi les stats
+      const dashboardStats = await getDashboardStats()
+      setStats({
+        unreadCount: dashboardStats.unreadCount || 0,
+        totalReceived: dashboardStats.totalReceived || 0,
+        archivedCount: dashboardStats.archivedCount || 0,
+        urgentCount: dashboardStats.urgentCount || 0
+      })
+    } catch (error) {
+      console.error('Failed to refresh data:', error)
+    }
   }
 
   const handleAddToCalendar = (noteId: string) => {

@@ -16,8 +16,8 @@ const roleBasedRoutes: Record<string, UserRole[]> = {
 const publicRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password', '/']
 
 export function middleware(request: NextRequest) {
+  
   const { pathname } = request.nextUrl
-
   const isDevelopment = process.env.NODE_ENV === 'development'
   if (isDevelopment) {
     return NextResponse.next()
@@ -43,7 +43,6 @@ export function middleware(request: NextRequest) {
   } catch {
     user = null
   }
-
   // Vérifier les permissions par rôle
   for (const [route, allowedRoles] of Object.entries(roleBasedRoutes)) {
     if (pathname.startsWith(route) && user && !allowedRoles.includes(user.role)) {

@@ -1,112 +1,88 @@
-import { useState, useEffect } from 'react'
-import { ReceivedNote, Notification } from '@/types/destinataire'
-import { destinataireService } from '@/services/destinataire.service'
+import { useState, useCallback } from 'react';
+import { notesService } from '@/services/notes.service';
+import { NoteDTO, NoteSummaryDTO, DashboardStatsDTO, ReceptionStatus } from '@/types/notes';
 
-export const useDestinataireNotes = (filters?: {
-  status?: 'UNREAD' | 'READ' | 'ARCHIVED'
-  type?: string
-  search?: string
-}) => {
-  const [notes, setNotes] = useState<ReceivedNote[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export const useRecipientNotes = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        setLoading(true)
-        const data = await destinataireService.getReceivedNotes(filters)
-        setNotes(data)
-        setError(null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch notes')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchNotes()
-  }, [filters?.status, filters?.type, filters?.search])
-
-  const refetch = async () => {
-    setLoading(true)
+  const getDashboardStats = useCallback(async (): Promise<DashboardStatsDTO> => {
+    setLoading(true);
+    setError(null);
     try {
-      const data = await destinataireService.getReceivedNotes(filters)
-      setNotes(data)
+      const stats = await notesService.getRecipientDashboard();
+      return stats;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch notes')
+      const message = err instanceof Error ? err.message : 'Erreur lors du chargement des statistiques';
+      setError(message);
+      throw err;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, []);
 
-  return { notes, loading, error, refetch }
-}
-
-export const useDestinataireStats = () => {
-  const [stats, setStats] = useState({
-    unreadCount: 0,
-    totalReceived: 0,
-    archivedCount: 0,
-    urgentCount: 0,
-  })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true)
-        const data = await destinataireService.getStats()
-        setStats(data)
-        setError(null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch stats')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchStats()
-  }, [])
-
-  return { stats, loading, error }
-}
-
-export const useNotifications = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true)
-        const data = await destinataireService.getNotifications()
-        setNotifications(data)
-        setError(null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch notifications')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchNotifications()
-  }, [])
-
-  const markAsRead = async (notificationId: string) => {
+  const getReceivedNotes = useCallback(async (params?: {
+    status?: ReceptionStatus;
+    page?: number;
+    limit?: number;
+    search?: string;
+  }) => {
+    setLoading(true);
+    setError(null);
     try {
-      await destinataireService.markNotificationAsRead(notificationId)
-      setNotifications(prev =>
-        prev.map(notif =>
-          notif.id === notificationId ? { ...notif, isRead: true } : notif
-        )
-      )
+      const result = await notesService.getReceivedNotes(params);
+      return result;
     } catch (err) {
-      console.error('Failed to mark notification as read:', err)
+      const message = err instanceof Error ? err.message : 'Erreur lors du chargement des notes';
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
     }
-  }
+  }, []);
 
-  return { notifications, loading, error, markAsRead }
-}
+  const markNoteAsRead = useCallback(async (noteId: string): Promise<void> => {
+    setError(null);
+    try {
+      await notesService.markAsRead(noteId);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erreur lors du marquage comme lu';
+      setError(message);
+      throw err;
+    }
+  }, []);
+
+  const archiveNote = useCallback(async (noteId: string): Promise<void> => {
+    setError(null);
+    try {
+      await notesService.archiveNote(noteId);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de l\'archivage';
+      setError(message);
+      throw err;
+    }
+  }, []);
+
+  const addToCalendar = useCallback(async (noteId: string): Promise<{ success: boolean; calendarUrl?: string }> => {
+    setError(null);
+    try {
+      const result = await notesService.addToCalendar(noteId);
+      return result;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de l\'ajout au calendrier';
+      setError(message);
+      throw err;
+    }
+  }, []);
+
+  return {
+    loading,
+    error,
+    getDashboardStats,
+    getReceivedNotes,
+    markNoteAsRead,
+    archiveNote,
+    addToCalendar,
+    clearError: () => setError(null)
+  };
+};

@@ -1,5 +1,4 @@
 'use client'
-
 import { SettingsTab } from '@/types/settings'
 import { cn } from '@/lib/utils'
 

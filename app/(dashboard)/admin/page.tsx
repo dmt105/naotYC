@@ -6,6 +6,7 @@ import { ConfirmModal } from '@/components/admin/ConfirmModal'
 import { useSystemStats } from '@/hooks/useAdmin'
 import { useUsersManagement } from '@/hooks/useAdmin'
 import { UserManagement } from '@/types/admin'
+import { TemplateManagement } from '@/components/admin/TemplateManagement';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'templates' | 'logs' | 'settings'>('overview')
@@ -195,6 +196,7 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <p className="text-gray-500 text-sm lg:text-base">Interface de gestion des modèles à implémenter...</p>
+              
             </div>
           </div>
         )

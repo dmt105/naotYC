@@ -1,93 +1,49 @@
-import { NoteDTO, NoteCreateDTO, NoteUpdateDTO, NoteStatus } from '@/types/notes'
+// src/services/notes.service.ts
+import { axiosClient } from './api/axiosClient';
+import { NoteDTO, NoteSummaryDTO, DashboardStatsDTO, ReceptionStatus } from '@/types/notes';
 
-class NotesService {
-  private baseURL = process.env.NEXT_PUBLIC_API_URL
+export const notesService = {
+  // Récupérer les statistiques du dashboard destinataire
+  async getRecipientDashboard(): Promise<DashboardStatsDTO> {
+    const response = await axiosClient.get('/api/recipient/dashboard');
+    return response.data;
+  },
 
-  async getNotesByStatus(status: NoteStatus[]): Promise<NoteDTO[]> {
-    const response = await fetch(`${this.baseURL}/notes?status=${status.join(',')}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    
-    if (!response.ok) throw new Error('Failed to fetch notes')
-    return response.json()
+  // Lister les notes reçues avec filtres
+  async getReceivedNotes(params?: {
+    status?: ReceptionStatus;
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<{
+    notes: NoteSummaryDTO[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const response = await axiosClient.get('/api/recipient/notes', { params });
+    return response.data;
+  },
+
+  // Récupérer une note spécifique
+  async getNoteById(noteId: string): Promise<NoteDTO> {
+    const response = await axiosClient.get(`/api/recipient/notes/${noteId}`);
+    return response.data;
+  },
+
+  // Marquer une note comme lue
+  async markAsRead(noteId: string): Promise<void> {
+    await axiosClient.patch(`/api/recipient/notes/${noteId}/read`);
+  },
+
+  // Marquer une note comme archivée
+  async archiveNote(noteId: string): Promise<void> {
+    await axiosClient.patch(`/api/recipient/notes/${noteId}/archive`);
+  },
+
+  // Ajouter au calendrier Google
+  async addToCalendar(noteId: string): Promise<{ success: boolean; calendarUrl?: string }> {
+    const response = await axiosClient.post(`/api/recipient/notes/${noteId}/add-to-calendar`);
+    return response.data;
   }
-
-  async getDrafts(): Promise<NoteDTO[]> {
-    return this.getNotesByStatus([NoteStatus.DRAFT])
-  }
-
-  async getPendingValidation(): Promise<NoteDTO[]> {
-    return this.getNotesByStatus([NoteStatus.PENDING_VALIDATION])
-  }
-
-  async getReturned(): Promise<NoteDTO[]> {
-    return this.getNotesByStatus([NoteStatus.RETURNED])
-  }
-
-  async getScheduled(): Promise<NoteDTO[]> {
-    return this.getNotesByStatus([NoteStatus.SCHEDULED])
-  }
-
-  async createNote(noteData: NoteCreateDTO): Promise<NoteDTO> {
-    const formData = new FormData()
-    Object.entries(noteData).forEach(([key, value]) => {
-      if (value) formData.append(key, value as string | Blob)
-    })
-
-    const response = await fetch(`${this.baseURL}/notes`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: formData
-    })
-
-    if (!response.ok) throw new Error('Failed to create note')
-    return response.json()
-  }
-
-  async submitForValidation(noteId: string): Promise<NoteDTO> {
-    const response = await fetch(`${this.baseURL}/notes/${noteId}/submit`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-
-    if (!response.ok) throw new Error('Failed to submit note')
-    return response.json()
-  }
-
-  async updateNote(noteId: string, noteData: NoteUpdateDTO): Promise<NoteDTO> {
-    const formData = new FormData()
-    Object.entries(noteData).forEach(([key, value]) => {
-      if (value) formData.append(key, value as string | Blob)
-    })
-
-    const response = await fetch(`${this.baseURL}/notes/${noteId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: formData
-    })
-
-    if (!response.ok) throw new Error('Failed to update note')
-    return response.json()
-  }
-
-  async deleteNote(noteId: string): Promise<void> {
-    const response = await fetch(`${this.baseURL}/notes/${noteId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-
-    if (!response.ok) throw new Error('Failed to delete note')
-  }
-}
-
-export const notesService = new NotesService()
+};

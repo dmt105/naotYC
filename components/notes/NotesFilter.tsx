@@ -1,7 +1,6 @@
-// src/components/notes/NotesFilter.tsx
 'use client'
 import { useState } from 'react'
-import { NoteStatus, NoteType } from '@/types'
+import { NoteStatus, NoteType } from '@/lib/types'
 
 interface NotesFilterProps {
   onFilterChange: (filter: {

@@ -1,25 +1,35 @@
-import { NoteStatus } from './enum'
+import { NoteStatus, ReceptionStatus } from './enum'
 
 export interface NoteDTO {
-  id: string
-  title: string
-  content: string
-  type: string
-  status: NoteStatus
+  id: string;
+  title: string;
+  content: string;
+  type: string;
+  status: NoteStatus;
   author: {
-    id: string
-    name: string
-    email: string
-  }
-  department: string
-  attachments: string[]
-  recipients: string[]
-  scheduledDate?: string
-  createdAt: string
-  updatedAt: string
-  comments: CommentDTO[]
-  validationHistory: ValidationStepDTO[]
+    id: string;
+    name: string;
+    email: string;
+  };
+  recipients: Array<{
+    id: string;
+    name: string;
+    email: string;
+    receptionStatus: ReceptionStatus;
+    readAt?: string;
+  }>;
+  attachments: Array<{
+    id: string;
+    name: string;
+    url: string;
+    size: number;
+  }>;
+  scheduledAt?: string;
+  sentAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
 
 export interface CommentDTO {
   id: string
@@ -57,6 +67,28 @@ export interface NoteUpdateDTO {
   scheduledDate?: string
 }
 
+export interface NoteSummaryDTO {
+  id: string;
+  title: string;
+  type: string;
+  status: NoteStatus;
+  receptionStatus: ReceptionStatus;
+  author: {
+    name: string;
+  };
+  scheduledAt?: string;
+  sentAt?: string;
+  createdAt: string;
+}
+
+export interface DashboardStatsDTO {
+  unreadCount: number;
+  readCount: number;
+  archivedCount: number;
+  totalReceived: number;
+  recentNotes: NoteSummaryDTO[];
+}
+
 export type NoteType = 'ANNOUNCEMENT' | 'MEETING' | 'REPORT' | 'OTHER'
 
-export { NoteStatus }
+export { NoteStatus, ReceptionStatus };
