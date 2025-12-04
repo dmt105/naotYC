@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Ubuntu} from 'next/font/google'
 import './globals.css'
 import {Toaster} from 'react-hot-toast';
+import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
 const ubuntu = Ubuntu({
   weight: ['300', '400', '500', '700'],
@@ -21,11 +22,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme-storage');
+                  if (theme) {
+                    const parsed = JSON.parse(theme);
+                    const currentTheme = parsed.state?.theme || 'light';
+                    document.documentElement.classList.remove('light', 'dark');
+                    document.documentElement.classList.add(currentTheme);
+                  } else {
+                    document.documentElement.classList.add('light');
+                  }
+                } catch (e) {
+                  document.documentElement.classList.add('light');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
-        className={`${ubuntu.variable}`}
+        className={`${ubuntu.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors`}
       >
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
         <Toaster position="top-right" />
       </body>
     </html>

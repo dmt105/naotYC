@@ -1,101 +1,65 @@
-'use client'
-import { useState } from 'react'
-import Link from 'next/link'
-import NotesFilter from '@/components/notes/NotesFilter'
-import {NotesTables} from '@/components/notes/NotesTables'
-import { Note, NoteStatus, NoteType } from '@/lib/types'
+/**
+ * Notes list page with CRUD operations
+ */
 
-// Données mockées pour la démonstration //
-const mockNotes: Note[] = [
-  {
-    id: '1',
-    title: 'Convocation réunion mensuelle',
-    content: 'Ordre du jour: bilan des activités...',
-    type: 'MEETING',
-    status: 'DRAFT',
-    author: {
-      id: '1',
-      name: 'Jean Dupont',
-      email: 'jean@youthcomputing.org',
-      roles: ['REDACTOR'],
-      department: 'Communication'
-    },
-    validators: [],
-    recipients: [],
-    attachments: [],
-    comments: [],
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    title: 'Rapport d\'activités Q1',
-    content: 'Bilan des activités du premier trimestre...',
-    type: 'REPORT',
-    status: 'PENDING_VALIDATION',
-    author: {
-      id: '1',
-      name: 'Jean Dupont',
-      email: 'jean@youthcomputing.org',
-      roles: ['REDACTOR'],
-      department: 'Communication'
-    },
-    validators: [{
-      id: '2',
-      name: 'Marie Martin',
-      email: 'marie@youthcomputing.org',
-      roles: ['DEPARTMENT_HEAD'],
-      department: 'Communication'
-    }],
-    recipients: [],
-    attachments: ['rapport-q1.pdf'],
-    comments: [],
-    createdAt: new Date('2024-01-10'),
-    updatedAt: new Date('2024-01-12')
-  }
-]
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Plus, Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { NoteList } from '@/components/notes/NoteList';
+import { NoteFormModal } from '@/components/notes/NoteFormModal';
+import { ROUTES } from '@/constants/routes';
 
 export default function NotesPage() {
-  const [filter, setFilter] = useState<{
-    status?: NoteStatus
-    type?: NoteType
-    search: string
-  }>({ search: '' })
-
-  const filteredNotes = mockNotes.filter(note => {
-    if (filter.status && note.status !== filter.status) return false
-    if (filter.type && note.type !== filter.type) return false
-    if (filter.search && !note.title.toLowerCase().includes(filter.search.toLowerCase())) return false
-    return true
-  })
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <div className="p-6 space-y-6">
-      {/* En-tête avec actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-         <div className="flex-1">
-             <h1 className="text-xl sm:text-2xl font-heading font-bold text-primary">
-                  Gestion des Notes
-              </h1>
-                 <p className="text-gray-600 mt-1 text-sm sm:text-base">
-                      Créez, modifiez et suivez vos notes internes
-                  </p>
-          </div>
-          <Link
-            href="/notes/new"
-             className="bg-yc-fuschia hover:bg-[#ae2530] hover:cursor-pointer text-white px-4 py-3 sm:px-6 sm:py-3 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 w-full sm:w-auto text-center"
-            >
-              <span className="text-lg">+</span>
-              <span>Nouvelle Note</span>
-            </Link>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-[#010b40]">Mes Notes</h1>
+          <p className="text-gray-600 mt-1">Gérez vos notes internes</p>
+        </div>
+        <Button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="bg-[#010b40] hover:bg-[#010b40]/90"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Nouvelle note
+        </Button>
       </div>
 
-      {/* Filtres */}
-      <NotesFilter onFilterChange={setFilter} />
+      {/* Search and Filters */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input
+            type="search"
+            placeholder="Rechercher une note..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline">
+          <Filter className="h-4 w-4 mr-2" />
+          Filtres
+        </Button>
+      </div>
 
-      {/* Tableau des notes */}
-       <NotesTables notes={filteredNotes} />
-      
+      {/* Notes List */}
+      <NoteList searchQuery={searchQuery} />
+
+      {/* Create Note Modal */}
+      <NoteFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
-  )
+  );
 }
+

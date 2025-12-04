@@ -1,57 +1,100 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+/**
+ * General utility functions
+ */
 
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Merge Tailwind CSS classes
+ */
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
-
-export function validateYouthComputingEmail(email: string): boolean {
-  return email.endsWith('@youthcomputing.org')
-}
-
-export function formatDate(date: string | Date): string {
-  return new Date(date).toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
-export function formatDateTime(date: string | Date): string {
-  return new Date(date).toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'long',
+/**
+ * Format date to French locale
+ */
+export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOptions): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return new Intl.DateTimeFormat('fr-FR', {
     day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    ...options,
+  }).format(dateObj);
+}
+
+/**
+ * Format date and time
+ */
+export function formatDateTime(date: string | Date): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
-  })
+    minute: '2-digit',
+  }).format(dateObj);
 }
 
-export function getStatusColor(status: string): string {
-  const statusColors: { [key: string]: string } = {
-    DRAFT: 'bg-gray-100 text-gray-800',
-    PENDING_VALIDATION: 'bg-yellow-100 text-yellow-800',
-    RETURNED: 'bg-orange-100 text-orange-800',
-    APPROVED: 'bg-green-100 text-green-800',
-    SCHEDULED: 'bg-blue-100 text-blue-800',
-    SENT: 'bg-purple-100 text-purple-800',
-    ARCHIVED: 'bg-gray-100 text-gray-800'
-  }
-  return statusColors[status] || 'bg-gray-100 text-gray-800'
+/**
+ * Get relative time (e.g., "il y a 2 heures")
+ */
+export function getRelativeTime(date: string | Date): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return 'à l\'instant';
+  if (diffInSeconds < 3600) return `il y a ${Math.floor(diffInSeconds / 60)} min`;
+  if (diffInSeconds < 86400) return `il y a ${Math.floor(diffInSeconds / 3600)} h`;
+  if (diffInSeconds < 604800) return `il y a ${Math.floor(diffInSeconds / 86400)} j`;
+  return formatDate(dateObj);
 }
 
-export function getUserRoleLabel(role: string): string {
-  const roleLabels: { [key: string]: string } = {
-    REDACTOR: 'Rédacteur',
-    DEPARTMENT_HEAD: 'Chef de Département',
-    EXECUTIVE_DIRECTOR: 'Directeur Exécutif',
-    RECIPIENT: 'Destinataire',
-    ADMIN: 'Administrateur'
-  }
-  return roleLabels[role] || role
+/**
+ * Format relative time (alias for getRelativeTime)
+ */
+export function formatRelativeTime(date: string | Date): string {
+  return getRelativeTime(date);
 }
+
+/**
+ * Truncate text with ellipsis
+ */
+export function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
+}
+
+/**
+ * Format file size
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+/**
+ * Debounce function
+ */
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(...args: Parameters<T>) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+

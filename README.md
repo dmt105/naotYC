@@ -1,36 +1,130 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NaotY Frontend - Application de Gestion des Notes Internes
 
-## Getting Started
+Application web frontend pour la gestion des notes internes de l'Association Youth Computing.
 
-First, run the development server:
+## 🚀 Technologies
 
+- **Next.js 15** (App Router)
+- **TypeScript**
+- **TailwindCSS**
+- **shadcn/ui**
+- **Zustand** (State Management)
+- **React Hook Form + Zod** (Formulaires & Validation)
+- **Axios** (API Client avec interceptors JWT)
+
+## 📁 Structure du Projet
+
+Voir `STRUCTURE_DOSSIERS.md` pour la structure complète des dossiers.
+
+## 🛠️ Installation
+
+### Prérequis
+
+- Node.js 18+ 
+- npm ou yarn
+
+### Étapes d'installation
+
+1. **Cloner le projet** (si applicable)
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd naoty-frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Installer les dépendances**
+```bash
+npm install
+# ou
+yarn install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Configurer les variables d'environnement**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Créer un fichier `.env.local` à la racine :
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
+```
 
-## Learn More
+4. **Lancer le serveur de développement**
+```bash
+npm run dev
+# ou
+yarn dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧪 Tests
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run test
+```
 
-## Deploy on Vercel
+## 📦 Build de Production
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+npm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Charte Graphique
+
+- **Couleurs principales** :
+  - Bleu : `#010b40`
+  - Fuchsia : `#f13544`
+  - Gris : `#999999`
+
+- **Polices** :
+  - Principale : Ubuntu
+  - Secondaire : Century Gothic
+
+## 👥 Rôles Utilisateurs
+
+1. **Rédacteur** : Crée et soumet des notes
+2. **Chef de Département** : Valide en premier niveau
+3. **Directeur Exécutif** : Validation finale
+4. **Destinataire** : Reçoit et lit les notes
+5. **Administrateur** : Gestion complète
+
+## 🔐 Authentification
+
+- Connexion email/mot de passe
+- Connexion Google OAuth (restriction @youthcomputing.org)
+- JWT avec refresh token
+- Routes protégées
+- **Comptes démo** pour tous les rôles (voir `DEMO_ACCOUNTS.md`)
+
+## 📝 Fonctionnalités Principales
+
+- ✅ Authentification complète
+- ✅ Dashboard personnalisé par rôle
+- ✅ Gestion des notes (CRUD)
+- ✅ Workflow de validation
+- ✅ Planification et rappels
+- ✅ Archivage et recherche
+- ✅ Gestion des modèles (Admin)
+- ✅ Statistiques et graphiques
+
+## 🏗️ Architecture
+
+- **SOLID** : Principe de responsabilité unique
+- **Modulaire** : Séparation claire des préoccupations
+- **Typage strict** : TypeScript partout
+- **Responsive** : Mobile-first design
+- **Accessible** : Conforme WCAG
+
+## 📚 Documentation
+
+- `STRUCTURE_DOSSIERS.md` : Structure complète des dossiers
+- `DEMO_ACCOUNTS.md` : Guide des comptes démo
+- `IMPLEMENTATION_STATUS.md` : État d'implémentation
+- Code commenté en anglais
+
+## 🔄 Intégration Backend
+
+L'application est prête à intégrer le backend FastAPI. Les services API sont configurés dans `services/` et utilisent Axios avec interceptors JWT.
+
+## 📄 Licence
+
+Propriété de l'Association Youth Computing

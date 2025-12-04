@@ -1,76 +1,73 @@
-'use client';
-import { useState } from 'react';
-import { ValidationCard } from '@/components/forms/validation-form';
-import { FileText } from 'lucide-react';
+/**
+ * Validation page - for validators (Chef de Département, Directeur Exécutif)
+ */
 
-// Données mockées
-const mockNotes = [
-  {
-    id: '1',
-    title: 'Convocation réunion technique',
-    content: 'Convocation pour la réunion technique du 20 janvier 2024...',
-    type: 'CONVOCATION',
-    status: 'PENDING_VALIDATION',
-    author: {
-      id: '1',
-      name: 'Jean Dupont',
-      email: 'jean@youthcomputing.org',
-      role: 'REDACTOR',
-      department: 'Technique'
-    },
-    recipients: [],
-    attachments: [],
-    createdAt: '2024-01-15T10:30:00Z',
-    updatedAt: '2024-01-15T10:30:00Z',
-    comments: [],
-    history: []
-  },
-  {
-    id: '2',
-    title: 'Rapport activité janvier',
-    content: 'Rapport des activités du département communication pour le mois de janvier...',
-    type: 'REPORT',
-    status: 'PENDING_VALIDATION', 
-    author: {
-      id: '2',
-      name: 'Marie Martin',
-      email: 'marie@youthcomputing.org',
-      role: 'REDACTOR',
-      department: 'Communication'
-    },
-    recipients: [],
-    attachments: [],
-    createdAt: '2024-01-14T15:45:00Z',
-    updatedAt: '2024-01-14T15:45:00Z',
-    comments: [],
-    history: []
-  }
-];
+'use client';
+
+import { useState } from 'react';
+import { Search, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ValidationPanel } from '@/components/validation/ValidationPanel';
+import { useAuthStore } from '@/store/auth.store';
+import { UserRole } from '@/types/auth.types';
 
 export default function ValidationPage() {
-  const [notes] = useState(mockNotes);
+  const { user } = useAuthStore();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  // Check if user can validate
+  const canValidate = user?.roles.some(
+    (role) => role === UserRole.CHEF_DEPARTEMENT || 
+              role === UserRole.DIRECTEUR_EXECUTIF || 
+              role === UserRole.ADMIN
+  );
+
+  if (!canValidate) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Accès non autorisé
+          </h2>
+          <p className="text-gray-600">
+            Vous n'avez pas les permissions nécessaires pour valider des notes.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Validation des notes</h1>
-        <p className="text-gray-600">
-          {notes.length} note(s) en attente de validation
-        </p>
+        <h1 className="text-3xl font-bold text-[#010b40]">Validation des Notes</h1>
+        <p className="text-gray-600 mt-1">Validez ou retournez les notes en attente</p>
       </div>
 
-      <div className="space-y-4">
-        {notes.map((note) => (
-          <ValidationCard key={note.id} note={note} />
-        ))}
-        
-        {notes.length === 0 && (
-          <div className="text-center py-12">
-            <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">Aucune note en attente de validation</p>
-          </div>
-        )}
+      {/* Search and Filters */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input
+            type="search"
+            placeholder="Rechercher une note..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline">
+          <Filter className="h-4 w-4 mr-2" />
+          Filtres
+        </Button>
       </div>
+
+      {/* Validation Panel */}
+      <ValidationPanel searchQuery={searchQuery} filterStatus={filterStatus} />
     </div>
   );
 }
+

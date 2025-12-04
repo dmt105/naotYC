@@ -1,107 +1,79 @@
+/**
+ * Templates management page (Admin only)
+ */
+
 'use client';
+
 import { useState } from 'react';
-
-interface Template {
-  id: string
-  name: string
-  type: string
-  content: string
-  department: string
-  createdAt: string
-}
-
-const mockTemplates: Template[] = [
-  {
-    id: '1',
-    name: 'Modèle Convocation Réunion',
-    type: 'convocation',
-    department: 'tous',
-    content: 'Convocation à la réunion du [DATE]\n\nObjet: [SUJET]\n\nCher(e)s collègues,\n\nNous vous convions à la réunion qui se tiendra le [DATE] à [HEURE] dans [LIEU].\n\nOrdre du jour:\n1. \n2. \n3. \n\nCordialement,\n[VOTRE NOM]',
-    createdAt: '2024-01-15'
-  },
-  {
-    id: '2', 
-    name: 'Modèle Rapport d\'Activité',
-    type: 'rapport',
-    department: 'tous',
-    content: 'RAPPORT D\'ACTIVITÉ - [MOIS/ANNÉE]\n\nDépartement: [DÉPARTEMENT]\n\nI. Activités réalisées\n• \n• \n• \n\nII. Prochaines étapes\n• \n• \n\nIII. Difficultés rencontrées\n• \n\nIV. Recommandations\n• ',
-    createdAt: '2024-01-10'
-  }
-]
+import { Plus, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { TemplateList } from '@/components/templates/TemplateList';
+import { TemplateFormModal } from '@/components/templates/TemplateFormModal';
+import { useAuthStore } from '@/store/auth.store';
+import { UserRole } from '@/types/auth.types';
 
 export default function TemplatesPage() {
-  const [templates] = useState<Template[]>(mockTemplates)
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
+  const { user } = useAuthStore();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleUseTemplate = (template: Template) => {
-    // Rediriger vers la création de note avec le template pré-rempli
-    const templateData = {
-      title: `Nouvelle note basée sur: ${template.name}`,
-      content: template.content,
-      type: template.type,
-      department: template.department
-    }
-    
-    // Stocker dans sessionStorage pour récupération dans l'éditeur
-    sessionStorage.setItem('templateData', JSON.stringify(templateData))
-    window.location.href = '/notes/new'
+  // Check if user is admin
+  const isAdmin = user?.roles.includes(UserRole.ADMIN);
+
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Accès non autorisé
+          </h2>
+          <p className="text-gray-600">
+            Seuls les administrateurs peuvent gérer les modèles.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Modèles de notes</h1>
-          <p className="text-gray-600 mt-1">Utilisez des modèles prédéfinis pour gagner du temps</p>
+          <h1 className="text-3xl font-bold text-[#010b40]">Gestion des Modèles</h1>
+          <p className="text-gray-600 mt-1">Créez et gérez les modèles de notes</p>
         </div>
+        <Button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="bg-[#010b40] hover:bg-[#010b40]/90"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Nouveau modèle
+        </Button>
       </div>
 
-      {/* Liste des modèles */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {templates.map(template => (
-          <div key={template.id} className="bg-white rounded-lg border-2 border-gray-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="font-semibold text-gray-900 text-lg">{template.name}</h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                    {template.type}
-                  </span>
-                  <span className="text-sm text-gray-500">Dépt: {template.department}</span>
-                </div>
-              </div>
-            </div>
-
-            <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-              {template.content.substring(0, 150)}...
-            </p>
-
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">
-                Créé le {new Date(template.createdAt).toLocaleDateString('fr-FR')}
-              </span>
-              <button
-                onClick={() => handleUseTemplate(template)}
-                className="px-4 py-2 bg-yc-fuschia hover:bg-[#f26873] hover:cursor-pointer text-white text-sm rounded-lg transition-colors"
-              >
-                Utiliser
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <Input
+          type="search"
+          placeholder="Rechercher un modèle..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
       </div>
 
-      {/* Message si aucun modèle */}
-      {templates.length === 0 && (
-        <div className="text-center py-12">
-          <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun modèle disponible</h3>
-          <p className="text-gray-500">Les modèles seront créés par l'administrateur</p>
-        </div>
-      )}
+      {/* Templates List */}
+      <TemplateList searchQuery={searchQuery} />
+
+      {/* Create Template Modal */}
+      <TemplateFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
-  )
+  );
 }
+

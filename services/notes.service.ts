@@ -1,49 +1,95 @@
-// src/services/notes.service.ts
-import { axiosClient } from './api/axiosClient';
-import { NoteDTO, NoteSummaryDTO, DashboardStatsDTO, ReceptionStatus } from '@/types/notes';
+/**
+ * Notes service
+ */
+
+import { apiClient } from '@/lib/axios';
+import {
+  Note,
+  CreateNoteDto,
+  UpdateNoteDto,
+  NoteFilters,
+} from '@/types/note.types';
+import { ApiResponse, PaginatedResponse } from '@/types/api.types';
 
 export const notesService = {
-  // Récupérer les statistiques du dashboard destinataire
-  async getRecipientDashboard(): Promise<DashboardStatsDTO> {
-    const response = await axiosClient.get('/api/recipient/dashboard');
-    return response.data;
+  /**
+   * Get all notes with filters
+   */
+  async getNotes(filters?: NoteFilters): Promise<PaginatedResponse<Note>> {
+    const response = await apiClient.get<ApiResponse<PaginatedResponse<Note>>>(
+      '/notes',
+      { params: filters }
+    );
+    return response.data.data;
   },
 
-  // Lister les notes reçues avec filtres
-  async getReceivedNotes(params?: {
-    status?: ReceptionStatus;
-    page?: number;
-    limit?: number;
-    search?: string;
-  }): Promise<{
-    notes: NoteSummaryDTO[];
-    total: number;
-    page: number;
-    totalPages: number;
-  }> {
-    const response = await axiosClient.get('/api/recipient/notes', { params });
-    return response.data;
+  /**
+   * Get a note by ID
+   */
+  async getNoteById(id: string): Promise<Note> {
+    const response = await apiClient.get<ApiResponse<Note>>(`/notes/${id}`);
+    return response.data.data;
   },
 
-  // Récupérer une note spécifique
-  async getNoteById(noteId: string): Promise<NoteDTO> {
-    const response = await axiosClient.get(`/api/recipient/notes/${noteId}`);
-    return response.data;
+  /**
+   * Create a new note
+   */
+  async createNote(data: CreateNoteDto): Promise<Note> {
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('content', data.content);
+    formData.append('type', data.type);
+    data.recipientIds.forEach((id) => formData.append('recipientIds', id));
+    
+    if (data.templateId) {
+      formData.append('templateId', data.templateId);
+    }
+    
+    if (data.scheduledAt) {
+      formData.append('scheduledAt', data.scheduledAt);
+    }
+    
+    if (data.attachments) {
+      data.attachments.forEach((file) => {
+        formData.append('attachments', file);
+      });
+    }
+
+    const response = await apiClient.post<ApiResponse<Note>>('/notes', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.data;
   },
 
-  // Marquer une note comme lue
-  async markAsRead(noteId: string): Promise<void> {
-    await axiosClient.patch(`/api/recipient/notes/${noteId}/read`);
+  /**
+   * Update a note
+   */
+  async updateNote(data: UpdateNoteDto): Promise<Note> {
+    const { id, ...updateData } = data;
+    const response = await apiClient.put<ApiResponse<Note>>(
+      `/notes/${id}`,
+      updateData
+    );
+    return response.data.data;
   },
 
-  // Marquer une note comme archivée
-  async archiveNote(noteId: string): Promise<void> {
-    await axiosClient.patch(`/api/recipient/notes/${noteId}/archive`);
+  /**
+   * Delete a note
+   */
+  async deleteNote(id: string): Promise<void> {
+    await apiClient.delete(`/notes/${id}`);
   },
 
-  // Ajouter au calendrier Google
-  async addToCalendar(noteId: string): Promise<{ success: boolean; calendarUrl?: string }> {
-    const response = await axiosClient.post(`/api/recipient/notes/${noteId}/add-to-calendar`);
-    return response.data;
-  }
+  /**
+   * Submit a note for validation
+   */
+  async submitNote(id: string): Promise<Note> {
+    const response = await apiClient.post<ApiResponse<Note>>(
+      `/notes/${id}/submit`
+    );
+    return response.data.data;
+  },
 };
+
