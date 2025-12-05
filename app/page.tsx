@@ -33,8 +33,8 @@ export default function Home() {
   const features = [
     {
       icon: FileText,
-      title: 'Gestion des Notes',
-      description: 'Créez, éditez et gérez toutes vos notes internes en un seul endroit.',
+      title: 'Gestion des documents',
+      description: 'Créez, éditez et gérez toutes vos documents internes en un seul endroit.',
     },
     {
       icon: CheckCircle,
@@ -54,9 +54,9 @@ export default function Home() {
   ];
 
   const stats = [
-    { value: '500+', label: 'Notes gérées' },
-    { value: '50+', label: 'Utilisateurs actifs' },
-    { value: '99%', label: 'Taux de satisfaction' },
+    { value: '70+', label: 'documents gérées' },
+    { value: '30+', label: 'Utilisateurs actifs' },
+    { value: '50%', label: 'Taux de satisfaction' },
     { value: '24/7', label: 'Disponibilité' },
   ];
 
@@ -93,7 +93,7 @@ export default function Home() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#010b40]">
               <span className="text-xl font-bold text-white">N</span>
             </div>
-            <span className="text-2xl font-bold text-[#010b40]">NaotY</span>
+            <span className="text-2xl font-bold text-[#010b40]">NaotYC</span>
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
@@ -104,10 +104,22 @@ export default function Home() {
               Fonctionnalités
             </a>
             <a
+              href="#workflow"
+              className="text-sm font-medium text-gray-600 hover:text-[#010b40] transition-colors"
+            >
+              Workflow
+            </a>
+            <a
               href="#about"
               className="text-sm font-medium text-gray-600 hover:text-[#010b40] transition-colors"
             >
               À propos
+            </a>
+            <a
+              href="#contact"
+              className="text-sm font-medium text-gray-600 hover:text-[#010b40] transition-colors"
+            >
+              Contact
             </a>
           </nav>
 
@@ -142,7 +154,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-4xl font-bold tracking-tight text-[#010b40] sm:text-5xl md:text-6xl lg:text-7xl animate-slide-up delay-100">
-              Gérez vos notes internes avec{' '}
+              Gérez vos documents internes avec{' '}
               <span className="text-[#f13544]">simplicité</span>
             </h1>
 
@@ -218,7 +230,7 @@ export default function Home() {
       </section>
 
       {/* Workflow Section */}
-      <section className="py-20">
+      <section id="workflow" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl font-bold text-[#010b40] md:text-4xl">
@@ -233,7 +245,7 @@ export default function Home() {
             {/* Workflow steps */}
             <div className="grid gap-8 md:grid-cols-4">
               {[
-                { step: '1', title: 'Création', desc: 'Rédigez votre note', icon: FileText },
+                { step: '1', title: 'Création', desc: 'Rédigez votre document', icon: FileText },
                 {
                   step: '2',
                   title: 'Validation',
@@ -290,31 +302,99 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Contact Section */}
+      <section id="contact" className="py-16 bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-3xl font-bold text-[#010b40] dark:text-white mb-4">
+              Contactez-nous
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 max-w-xl mb-6">
+              Une question sur NaotY ou besoin d&apos;un accompagnement pour la mise en place ?
+              Notre équipe Youth Computing est à votre écoute.
+            </p>
+            <div className="space-y-3 text-gray-700 dark:text-gray-300">
+              <p><strong>Email :</strong> contact@youthcomputing.org</p>
+              <p><strong>Téléphone :</strong> +261 XX XX XXX XX</p>
+              <p><strong>Adresse :</strong> Youth Computing, Madagascar</p>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-[#010b40] dark:text-white mb-4">
+              Envoyer un message
+            </h3>
+            <form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Nom complet
+                </label>
+                <input
+                  type="text"
+                  className="w-full rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
+                  placeholder="Votre nom"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="w-full rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
+                  placeholder="vous@youthcomputing.org"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Message
+                </label>
+                <textarea
+                  className="w-full rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 min-h-[100px]"
+                  placeholder="Décrivez votre besoin..."
+                />
+              </div>
+              <Button
+                type="button"
+                className="w-full bg-[#f13544] hover:bg-[#f13544]/90 text-white"
+              >
+                Envoyer
+              </Button>
+            </form>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-12">
+      <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#010b40]">
                 <span className="text-lg font-bold text-white">N</span>
               </div>
-              <span className="text-xl font-bold text-[#010b40]">NaotY</span>
+              <span className="text-xl font-bold text-[#010b40] dark:text-white">NaotY</span>
             </div>
 
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} Youth Computing. Tous droits réservés.
             </p>
 
             <div className="flex gap-6">
               <a
+                href="#contact"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#010b40] dark:hover:text-white transition-colors"
+              >
+                Contact
+              </a>
+              <a
                 href="#"
-                className="text-sm text-gray-600 hover:text-[#010b40] transition-colors"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#010b40] dark:hover:text-white transition-colors"
               >
                 Confidentialité
               </a>
               <a
                 href="#"
-                className="text-sm text-gray-600 hover:text-[#010b40] transition-colors"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#010b40] dark:hover:text-white transition-colors"
               >
                 Conditions
               </a>

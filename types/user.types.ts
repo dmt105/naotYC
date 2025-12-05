@@ -14,6 +14,7 @@ export interface UserProfile {
   department?: string;
   phone?: string;
   position?: string;
+  isActive?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,4 +32,6 @@ export interface AssignRoleDto {
   userId: string;
   roles: UserRole[];
 }
+
+
 

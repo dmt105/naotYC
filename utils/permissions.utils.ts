@@ -57,3 +57,7 @@ export function canManageTemplates(userRoles: UserRole[]): boolean {
   return hasPermission(userRoles, 'templates:manage');
 }
 
+
+
+
+

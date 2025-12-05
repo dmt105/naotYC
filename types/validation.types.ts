@@ -31,3 +31,7 @@ export interface ValidationStats {
   validationRate: number; // percentage
 }
 
+
+
+
+

@@ -105,3 +105,7 @@ function getDepartmentByRole(role: UserRole): string {
   return departments[role] || 'Général';
 }
 
+
+
+
+

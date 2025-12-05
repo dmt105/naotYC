@@ -34,3 +34,7 @@ export const STATUS_ICONS: Record<NoteStatus, string> = {
   [NoteStatus.ARCHIVED]: 'Archive',
 };
 
+
+
+
+
