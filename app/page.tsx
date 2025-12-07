@@ -159,7 +159,7 @@ export default function Home() {
             </h1>
 
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 md:text-xl animate-slide-up delay-200">
-              NaotY centralise la création, validation et diffusion de vos notes internes. Un
+              NaotY centralise la création, validation et diffusion de vos documents internes. Un
               workflow puissant pour Youth Computing.
             </p>
 
@@ -207,7 +207,7 @@ export default function Home() {
               Fonctionnalités <span className="text-[#f13544]">puissantes</span>
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Tout ce dont vous avez besoin pour gérer efficacement vos notes internes
+              Tout ce dont vous avez besoin pour gérer efficacement vos documents internes
             </p>
           </div>
 
@@ -286,7 +286,7 @@ export default function Home() {
             <p className="mt-6 text-lg text-white/80">
               Youth Computing est une association dédiée à la promotion de la culture numérique à
               Madagascar. NaotY est notre solution interne pour moderniser la gestion de nos
-              communications officielles et garantir une traçabilité complète de nos notes internes.
+              communications officielles et garantir une traçabilité complète de nos documents internes.
             </p>
             <div className="mt-8">
               <Button

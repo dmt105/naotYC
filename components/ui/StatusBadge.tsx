@@ -1,4 +1,4 @@
-import { NoteStatus } from '@/types'
+import { NoteStatus } from '@/types/note.types'
 import { cn } from '@/lib/utils'
 
 interface StatusBadgeProps {
@@ -7,7 +7,7 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const statusConfig = {
+  const statusConfig: Record<NoteStatus, { label: string; color: string }> = {
     DRAFT: {
       label: 'Brouillon',
       color: 'bg-yellow-100 text-yellow-800'

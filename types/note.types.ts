@@ -112,6 +112,9 @@ export interface NoteFilters {
   search?: string;
   dateFrom?: string;
   dateTo?: string;
+  // Pagination
+  page?: number;
+  limit?: number;
 }
 
 

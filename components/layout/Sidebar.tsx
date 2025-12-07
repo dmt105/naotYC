@@ -43,7 +43,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    label: 'Mes Notes',
+    label: 'Mes Documents',
     href: ROUTES.NOTES,
     icon: FileText,
     roles: [

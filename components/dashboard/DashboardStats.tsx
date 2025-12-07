@@ -91,7 +91,7 @@ export function DashboardStats() {
       case UserRole.ADMIN: {
         const adminStats = stats as StatsByRole[UserRole.ADMIN];
         return [
-          { label: 'Total Notes', value: adminStats.totalNotes, icon: FileText, color: 'bg-[#010b40]' },
+          { label: 'Total Documents', value: adminStats.totalNotes, icon: FileText, color: 'bg-[#010b40]' },
           { label: 'Utilisateurs', value: adminStats.totalUsers, icon: FileText, color: 'bg-[#f13544]' },
           { label: 'En validation', value: adminStats.pendingValidation, icon: Clock, color: 'bg-yellow-500' },
           { label: 'Archivées', value: adminStats.archived, icon: Archive, color: 'bg-gray-400' },

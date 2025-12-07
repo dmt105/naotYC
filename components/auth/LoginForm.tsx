@@ -105,6 +105,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-md space-y-6">
       <div className="text-center">
+        <img src="/logo.png" alt="NaotY" className="mx-auto h-30 w-30 mb-4" />
         <h1 className="text-3xl font-bold text-[#010b40]">Connexion</h1>
         <p className="mt-2 text-sm text-gray-600">
           Accédez à votre espace NaotY
@@ -171,9 +172,9 @@ export function LoginForm() {
             />
             <span className="text-sm text-gray-600">Se souvenir de moi</span>
           </label>
-          <a href="#" className="text-sm text-[#f13544] hover:underline">
+          <Link href="/forgot-password" className="text-sm text-[#f13544] hover:underline">
             Mot de passe oublié ?
-          </a>
+          </Link>
         </div>
 
         {/* Submit button */}

@@ -12,8 +12,8 @@ const ubuntu = Ubuntu({
 
 
 export const metadata: Metadata = {
-  title: 'NaotY - Gestion des Notes Internes | Youth Computing',
-  description: 'Solution de gestion des notes internes pour Youth Computing. Workflow collaboratif, validation hiérarchique et diffusion optimisée.',
+  title: 'NaotY - Gestion des Documents Internes | Youth Computing',
+  description: 'Solution de gestion des documents internes pour Youth Computing. Workflow collaboratif, validation hiérarchique et diffusion optimisée.',
 }
 
 export default function RootLayout({

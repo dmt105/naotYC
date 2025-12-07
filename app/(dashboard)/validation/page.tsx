@@ -32,7 +32,7 @@ export default function ValidationPage() {
             Accès non autorisé
           </h2>
           <p className="text-gray-600">
-            Vous n'avez pas les permissions nécessaires pour valider des notes.
+            Vous n'avez pas les permissions nécessaires pour valider des documents.
           </p>
         </div>
       </div>
@@ -43,8 +43,8 @@ export default function ValidationPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#010b40]">Validation des Notes</h1>
-        <p className="text-gray-600 mt-1">Validez ou retournez les notes en attente</p>
+  <h1 className="text-3xl font-bold text-[#010b40]">Validation des Documents</h1>
+  <p className="text-gray-600 mt-1">Validez ou retournez les documents en attente</p>
       </div>
 
       {/* Search and Filters */}
@@ -53,7 +53,7 @@ export default function ValidationPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
             type="search"
-            placeholder="Rechercher une note..."
+            placeholder="Rechercher un document..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"

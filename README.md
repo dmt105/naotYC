@@ -1,6 +1,6 @@
-# NaotY Frontend - Application de Gestion des Notes Internes
+# NaotY Frontend - Application de Gestion des Documents Internes
 
-Application web frontend pour la gestion des notes internes de l'Association Youth Computing.
+Application web frontend pour la gestion des documents internes de l'Association Youth Computing.
 
 ## 🚀 Technologies
 
@@ -81,10 +81,10 @@ npm start
 
 ## 👥 Rôles Utilisateurs
 
-1. **Rédacteur** : Crée et soumet des notes
+1. **Rédacteur** : Crée et soumet des documents
 2. **Chef de Département** : Valide en premier niveau
 3. **Directeur Exécutif** : Validation finale
-4. **Destinataire** : Reçoit et lit les notes
+4. **Destinataire** : Reçoit et lit les documents
 5. **Administrateur** : Gestion complète
 
 ## 🔐 Authentification
@@ -99,7 +99,7 @@ npm start
 
 - ✅ Authentification complète
 - ✅ Dashboard personnalisé par rôle
-- ✅ Gestion des notes (CRUD)
+- ✅ Gestion des documents (CRUD)
 - ✅ Workflow de validation
 - ✅ Planification et rappels
 - ✅ Archivage et recherche

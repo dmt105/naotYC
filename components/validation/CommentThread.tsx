@@ -1,5 +1,5 @@
 /**
- * Comment thread component - displays comments on a note
+ * Comment thread component - displays comments on a document
  */
 
 'use client';

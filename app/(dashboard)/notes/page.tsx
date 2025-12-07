@@ -21,15 +21,15 @@ export default function NotesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#010b40]">Mes Notes</h1>
-          <p className="text-gray-600 mt-1">Gérez vos notes internes</p>
+          <h1 className="text-3xl font-bold text-[#010b40]">Mes Documents</h1>
+          <p className="text-gray-600 mt-1">Gérez vos documents internes</p>
         </div>
         <Button
           onClick={() => setIsCreateModalOpen(true)}
           className="bg-[#010b40] hover:bg-[#010b40]/90"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Nouvelle note
+          Nouveau document
         </Button>
       </div>
 
@@ -39,7 +39,7 @@ export default function NotesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
             type="search"
-            placeholder="Rechercher une note..."
+            placeholder="Rechercher un document..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"

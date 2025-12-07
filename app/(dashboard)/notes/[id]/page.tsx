@@ -1,5 +1,5 @@
 /**
- * Note detail page
+ * Document detail page
  */
 
 'use client';

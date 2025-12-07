@@ -1,5 +1,5 @@
 /**
- * Validation panel component - displays notes pending validation
+ * Validation panel component - displays documents pending validation
  */
 
 'use client';
@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
 import { CheckCircle } from 'lucide-react';
-import { Note, NoteStatus } from '@/types/note.types';
+import { Note, NoteStatus, NoteType } from '@/types/note.types';
 
 // Mock data - replace with API call
 const mockPendingNotes: Note[] = [
@@ -15,7 +15,7 @@ const mockPendingNotes: Note[] = [
     id: '1',
     title: 'Rapport mensuel - Décembre',
     content: 'Rapport des activités du mois de décembre...',
-    type: 'RAPPORT',
+  type: NoteType.RAPPORT,
     status: NoteStatus.PENDING_VALIDATION,
     authorId: '2',
     author: {
@@ -33,7 +33,7 @@ const mockPendingNotes: Note[] = [
     id: '2',
     title: 'Annonce réunion équipe',
     content: 'Réunion prévue le 20 janvier...',
-    type: 'ANNONCE',
+  type: NoteType.ANNONCE,
     status: NoteStatus.PENDING_VALIDATION,
     authorId: '3',
     author: {
@@ -72,8 +72,8 @@ export function ValidationPanel({ searchQuery = '', filterStatus = 'all' }: Vali
     return (
       <EmptyState
         icon={CheckCircle}
-        title="Aucune note en attente"
-        description="Toutes les notes ont été traitées"
+        title="Aucun document en attente"
+        description="Tous les documents ont été traités"
       />
     );
   }

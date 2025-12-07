@@ -74,5 +74,16 @@ export const authService = {
   async logout(): Promise<void> {
     await apiClient.post('/auth/logout');
   },
+  /**
+   * Request password reset (forgot password)
+   */
+  async forgotPassword(email: string): Promise<{ message?: string }> {
+    const response = await apiClient.post<ApiResponse<{ message?: string }>>(
+      '/auth/forgot-password',
+      { email }
+    );
+    // Return either data payload or message
+    return response.data.data || { message: response.data.message };
+  },
 };
 

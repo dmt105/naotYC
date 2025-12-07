@@ -23,13 +23,13 @@ export function NotesOverview() {
   return (
     <Card className="p-6 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-[#010b40] dark:text-white">Mes Notes Récentes</h2>
+  <h2 className="text-xl font-semibold text-[#010b40] dark:text-white">Mes Documents Récents</h2>
         <Button
           onClick={() => router.push(ROUTES.NOTES_CREATE)}
           className="bg-[#010b40] hover:bg-[#010b40]/90 dark:bg-[#f13544] dark:hover:bg-[#f13544]/90"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Nouvelle note
+          Nouveau document
         </Button>
       </div>
 
@@ -56,7 +56,7 @@ export function NotesOverview() {
         ) : (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <FileText className="h-12 w-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-            <p>Aucune note récente</p>
+            <p>Aucun document récent</p>
           </div>
         )}
       </div>

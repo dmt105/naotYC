@@ -34,7 +34,7 @@ export function ValidationActions({ noteId, onActionComplete }: ValidationAction
     try {
       // TODO: Replace with actual API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Note approuvée avec succès');
+  toast.success('Document approuvé avec succès');
       setIsApproveModalOpen(false);
       setComment('');
       onActionComplete?.();
@@ -55,7 +55,7 @@ export function ValidationActions({ noteId, onActionComplete }: ValidationAction
     try {
       // TODO: Replace with actual API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Note retournée avec commentaire');
+  toast.success('Document retourné avec commentaire');
       setIsReturnModalOpen(false);
       setComment('');
       onActionComplete?.();
@@ -71,7 +71,7 @@ export function ValidationActions({ noteId, onActionComplete }: ValidationAction
     try {
       // TODO: Replace with actual API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Note archivée');
+  toast.success('Document archivé');
       setIsArchiveModalOpen(false);
       onActionComplete?.();
     } catch (error: any) {
@@ -113,9 +113,9 @@ export function ValidationActions({ noteId, onActionComplete }: ValidationAction
       <Dialog open={isApproveModalOpen} onOpenChange={setIsApproveModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Approuver la note</DialogTitle>
+            <DialogTitle>Approuver le document</DialogTitle>
             <DialogDescription>
-              Êtes-vous sûr de vouloir approuver cette note ?
+              Êtes-vous sûr de vouloir approuver ce document ?
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end space-x-3 mt-4">
@@ -137,9 +137,9 @@ export function ValidationActions({ noteId, onActionComplete }: ValidationAction
       <Dialog open={isReturnModalOpen} onOpenChange={setIsReturnModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Retourner la note</DialogTitle>
+            <DialogTitle>Retourner le document</DialogTitle>
             <DialogDescription>
-              Ajoutez un commentaire expliquant pourquoi la note est retournée
+              Ajoutez un commentaire expliquant pourquoi le document est retourné
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4">
@@ -169,9 +169,9 @@ export function ValidationActions({ noteId, onActionComplete }: ValidationAction
       <Dialog open={isArchiveModalOpen} onOpenChange={setIsArchiveModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Archiver la note</DialogTitle>
+            <DialogTitle>Archiver le document</DialogTitle>
             <DialogDescription>
-              Êtes-vous sûr de vouloir archiver cette note ?
+              Êtes-vous sûr de vouloir archiver ce document ?
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end space-x-3 mt-4">

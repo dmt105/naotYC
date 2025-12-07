@@ -5,11 +5,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, User, Building } from 'lucide-react';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth.store';
@@ -51,11 +58,13 @@ export function RegisterForm() {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       acceptTerms: false,
+      department: '',
     },
   });
 
@@ -110,6 +119,7 @@ export function RegisterForm() {
   return (
     <div className="w-full max-w-md space-y-6">
       <div className="text-center">
+        <img src="/logo.png" alt="NaotY" className="mx-auto h-30 w-30 mb-4" />
         <h1 className="text-3xl font-bold text-[#010b40]">Créer un compte</h1>
         <p className="mt-2 text-sm text-gray-600">
           Rejoignez l'équipe Youth Computing
@@ -171,20 +181,43 @@ export function RegisterForm() {
           </div>
         </div>
 
-        {/* Department */}
+        {/* Department (select) */}
         <div>
           <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
             Département
           </label>
           <div className="relative">
             <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <Input
-              id="department"
-              type="text"
-              placeholder="Ex: Communication, Technique..."
-              className="pl-10"
-              error={errors.department?.message}
-              {...register('department')}
+            <Controller
+              name="department"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger id="department" className="pl-10">
+                      <SelectValue placeholder="Sélectionnez un département" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[
+                        'Technique',
+                        'Communication',
+                        'Direction',
+                        'IT',
+                        'Ressources Humaines',
+                        'Finance',
+                        'Général',
+                      ].map((dept) => (
+                        <SelectItem key={dept} value={dept}>
+                          {dept}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.department && (
+                    <p className="mt-1 text-xs text-red-500">{errors.department.message}</p>
+                  )}
+                </>
+              )}
             />
           </div>
         </div>

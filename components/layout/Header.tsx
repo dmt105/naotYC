@@ -23,7 +23,7 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
             <Input
               type="search"
-              placeholder="Rechercher une note, un utilisateur..."
+              placeholder="Rechercher un document, un utilisateur..."
               className="pl-10 w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
             />
           </div>

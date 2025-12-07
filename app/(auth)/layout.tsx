@@ -86,7 +86,7 @@ export default function AuthLayout({
                 <span className="text-xl font-bold text-[#010b40] dark:text-white">NaotY</span>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Gestion des notes internes pour Youth Computing.
+                Gestion des documents internes pour Youth Computing.
               </p>
             </div>
 

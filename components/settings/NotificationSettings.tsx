@@ -95,7 +95,7 @@ export function NotificationSettings() {
           />
           <ToggleSwitch
             label="Rappels de validation"
-            description="Rappels automatiques pour les notes en attente"
+            description="Rappels automatiques pour les documents en attente"
             checked={settings.validationReminders}
             onChange={(checked) => setSettings({ ...settings, validationReminders: checked })}
           />
